@@ -153,19 +153,30 @@ public class ServerEventHandler {
                 Metal mt;
 
                 if (true) {
-                    metals = Metal.values();
-                    len = metals.length;
+                    if (event.isWasDeath()) {
+                        byte randomMisting = getRandFerring();
+                        cap.addPower(Metal.getMetal(randomMisting));
+                        ItemStack flakes = new ItemStack((ItemLike)((RegistryObject) MaterialsSetup.FLAKES.get(randomMisting)).get());
+                        if (!player.getInventory().add(flakes)) {
+                            ItemEntity entity = new ItemEntity(player.getCommandSenderWorld(), player.position().x(), player.position().y(), player.position().z(), flakes);
+                            player.getCommandSenderWorld().addFreshEntity(entity);
+                        }
+                    } else {
+                        metals = Metal.values();
+                        len = metals.length;
 
-                    for(i = 0; i < len; ++i) {
-                        mt = metals[i];
-                        if(oldCap.hasPower(mt)){
-                            cap.addPower(mt);
+                        for (i = 0; i < len; ++i) {
+                            mt = metals[i];
+                            if (oldCap.hasPower(mt)){
+                                cap.addPower(mt);
+                            }
                         }
                     }
                     cap.setFid(oldCap.getFid());
                     cap.setStoredExp(oldCap.getStoredExp());
                     cap.setStepAssist(oldCap.isStepAssist());
                 }
+
 
             });
             Network.sync(player);
